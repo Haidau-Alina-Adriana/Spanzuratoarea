@@ -69,17 +69,17 @@ def get_word(category):
 
 def display_category(category):
     switch = {
-        0: "exit",
-        1: "food",
-        2: "house",
-        3: "feelings",
-        4: "clothing",
-        5: "careers",
-        6: "programming",
-        7: "animals",
-        8: "universe",
-        9: "human body",
-        10: "car"
+        0: "Exit",
+        1: "Food",
+        2: "House",
+        3: "Feelings",
+        4: "Clothing",
+        5: "Careers",
+        6: "Programming",
+        7: "Animals",
+        8: "Universe",
+        9: "HumanBody",
+        10: "Car"
     }
     result = switch.get(category)
     print("You have chosen: " + str(result))
@@ -151,8 +151,9 @@ def start_game():
     update_and_register_score(result, fin_time)
     if result == 1:
         print()
-        print("Failed attempts: " + str(failed_attempts))
+        print("The word was: " + word_to_guess)
         print("Well played!")
+        print("Failed attempts: " + str(failed_attempts))
     else:
         if result == -1:
             print()
