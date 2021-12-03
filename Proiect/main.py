@@ -11,13 +11,29 @@ class ValueNotInRange(Error):
     pass
 
 
-score = {"won game": "no", "time": "none"}
+score = {"Played games": 0, "Won games": 0, "Lost games": 0}
 
 
-def display_menu():
+def display_start_menu():
     print("\nHi! :)")
     print("You can choose to guess a word from a certain category or you can leave the app.")
     print("Choose a number that corresponds to the category from which you want to guess the word or exit: ")
+    print("[0] Exit the program")
+    print("[1] Food")
+    print("[2] House")
+    print("[3] Feelings")
+    print("[4] Clothing")
+    print("[5] Careers")
+    print("[6] Programming")
+    print("[7] Animals")
+    print("[8] Universe")
+    print("[9] Human body")
+    print("[10] Car")
+
+
+def display_menu():
+    print()
+    print("Choose a category (or 0 to exit): ")
     print("[0] Exit the program")
     print("[1] Food")
     print("[2] House")
@@ -68,20 +84,9 @@ def get_word(category):
 
 
 def display_category(category):
-    switch = {
-        0: "Exit",
-        1: "Food",
-        2: "House",
-        3: "Feelings",
-        4: "Clothing",
-        5: "Careers",
-        6: "Programming",
-        7: "Animals",
-        8: "Universe",
-        9: "HumanBody",
-        10: "Car"
-    }
-    result = switch.get(category)
+    possible_categories = {0: "Exit", 1: "Food", 2: "House", 3: "Feelings", 4: "Clothing", 5: "Careers",
+                           6: "Programming", 7: "Animals", 8: "Universe", 9: "HumanBody", 10: "Car"}
+    result = possible_categories.get(category)
     print("You have chosen: " + str(result))
     return get_word(result)
 
@@ -112,54 +117,55 @@ def start_guessing(word, attempts):
                 current_state[curr_letter] = letter
                 ok = 1
         if "_" not in current_state:
-            obj = time.localtime()
-            obj = time.strftime("%Y-%m-%d -> %H:%M:%S", obj)
-            return 1, diff - attempts, obj
+            return 1, diff - attempts
         if ok == 0 or mistake == 1:
             attempts = attempts - 1
         if attempts == 0:
             print("--->   " + ' '.join(current_state) + "              Number of attempts left: " + str(attempts))
-            obj = time.localtime()
-            obj = time.strftime("%Y-%m-%d -> %H:%M:%S", obj)
-            return -1, diff - attempts, obj
+            return -1, diff - attempts
 
 
-def update_and_register_score(result, finishing_time):
+def update_and_register_score(result):
+    total_games = score.get("Played games") + 1
+    score.update({"Played games": total_games})
     if result == 1:
-        score.update({"won game": "yes"})
+        won_games = score.get("Won games") + 1
+        score.update({"Won games": won_games})
     else:
-        score.update({"won game": "no"})
-    score.update({"time": finishing_time})
+        lost_games = score.get("Lost games") + 1
+        score.update({"Lost games": lost_games})
     if not os.path.isfile('./log.txt'):
         file = open("log.txt", "x")
         file.write(str(score))
     else:
-        file = open("log.txt", "a")
+        file = open("log.txt", "w")
         file.write("\n" + str(score))
     file.close()
 
 
 def start_game():
-    display_menu()
-    category = get_category()
-    if category == 0:
-        print("Sad to see you leaving :(")
-        return
-    word_to_guess = display_category(category)
-    number_of_attempts = int(len(word_to_guess) / 2 + 1)
-    result, failed_attempts, fin_time = start_guessing(word_to_guess, number_of_attempts)
-    update_and_register_score(result, fin_time)
-    if result == 1:
-        print()
-        print("The word was: " + word_to_guess)
-        print("Well played!")
-        print("Failed attempts: " + str(failed_attempts))
-    else:
-        if result == -1:
+    display_start_menu()
+    while True:
+        category = get_category()
+        if category == 0:
+            print("Sad to see you leaving :(")
+            return
+        word_to_guess = display_category(category)
+        number_of_attempts = int(len(word_to_guess) / 2 + 1)
+        result, failed_attempts = start_guessing(word_to_guess, number_of_attempts)
+        update_and_register_score(result)
+        if result == 1:
             print()
-            print("You don't have any attempts left!")
             print("The word was: " + word_to_guess)
+            print("Well played!")
             print("Failed attempts: " + str(failed_attempts))
+        else:
+            if result == -1:
+                print()
+                print("You don't have any attempts left!")
+                print("The word was: " + word_to_guess)
+                print("Failed attempts: " + str(failed_attempts))
+        display_menu()
 
 
 if __name__ == '__main__':
