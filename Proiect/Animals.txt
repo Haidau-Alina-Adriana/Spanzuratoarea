@@ -10,7 +10,7 @@ mouse
 hamster
 cow
 rabbit
-ducks
+duck
 shrimp
 pig
 deer

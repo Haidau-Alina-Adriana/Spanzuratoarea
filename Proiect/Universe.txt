@@ -7,7 +7,6 @@ milkyway
 energy
 dimension
 existence
-redshift
 electromagnetic
 radiation
 antimatter
@@ -19,9 +18,8 @@ cosmos
 plasma
 electron
 quark
-lepton
 gravity
-macrocosm
+macrocosmos
 moon
 andromeda
 helium

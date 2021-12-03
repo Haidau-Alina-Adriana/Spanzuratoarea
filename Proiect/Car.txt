@@ -18,7 +18,7 @@ backseat
 mercedes
 gear
 mirror
-windows
+window
 ford
 volkswagen
 honda

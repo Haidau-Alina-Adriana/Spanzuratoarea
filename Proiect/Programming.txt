@@ -32,7 +32,6 @@ telnet
 multiprogramming
 algorithm
 malware
-screensaver
 multitask
 extension
 private
@@ -60,7 +59,6 @@ assembly
 groovy
 feature
 cryptography
-pixel
 collision
 descriptor
 pipe
@@ -116,6 +114,7 @@ security
 bugs
 engineering
 iterative
+recursive
 stackoverflow
 framework
 path

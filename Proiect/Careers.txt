@@ -40,7 +40,7 @@ driver
 cook
 receptionist
 paralegal
-Painter
+painter
 cashier
 janitor
 electrician
