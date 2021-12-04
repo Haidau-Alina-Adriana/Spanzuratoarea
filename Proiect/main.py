@@ -1,6 +1,5 @@
 import os
 import random
-import time
 
 
 class Error(Exception):
@@ -19,16 +18,16 @@ def display_start_menu():
     print("You can choose to guess a word from a certain category or you can leave the app.")
     print("Choose a number that corresponds to the category from which you want to guess the word or exit: ")
     print("[0] Exit the program")
-    print("[1] Food")
-    print("[2] House")
+    print("[1] Food -> ingredients")
+    print("[2] House -> things from a house")
     print("[3] Feelings")
     print("[4] Clothing")
     print("[5] Careers")
-    print("[6] Programming")
+    print("[6] Programming -> computer science related")
     print("[7] Animals")
-    print("[8] Universe")
+    print("[8] Universe -> things from space")
     print("[9] Human body")
-    print("[10] Car")
+    print("[10] Car -> car related (even brands)")
 
 
 def display_menu():
@@ -51,13 +50,11 @@ def get_category():
     while True:
         try:
             category = int(input("Category:"))
-            if category < 0 or category > 12:
-                raise ValueNotInRange
+            if category < 0 or category > 10:
+                raise ValueError("Please enter a number corresponding with the category: ")
             return category
-        except ValueError:
-            print("Please enter a number corresponding with the category: ")
-        except ValueNotInRange:
-            print("This value is not a valid option!")
+        except ValueError as ve:
+            print(ve)
 
 
 def get_word(category):
@@ -67,7 +64,7 @@ def get_word(category):
         line_count = 0
         for _ in file:
             line_count += 1
-        row_number = random.randint(0, line_count)
+        row_number = random.randint(0, line_count-1)
         file.seek(0)
         word = ""
         for i, row in enumerate(file):
@@ -94,21 +91,27 @@ def display_category(category):
 def start_guessing(word, attempts):
     diff = attempts
     current_state = ["_" for _ in range(len(word))]
+    used_letters = []
     while True:
         print("--->   " + ' '.join(current_state) + "              Number of attempts left: " + str(attempts))
-        print("Try: ", end='')
+        print("Check this letter: ", end='')
         letter = input().lower()
         mistake = 0
-        if letter in current_state:
-            if attempts != 1:
-                print("Try a different letter.")
-            mistake = 1
+        if letter == '':
+            print("Give me a letter, buddy.")
+            continue
         if len(letter) > 1:
             print("Too many characters.")
             mistake = 1
         if letter.isdigit():
             print("Letters only.")
             mistake = 1
+        if letter in used_letters:
+            if attempts != 1:
+                print("Try a different letter.")
+            mistake = 1
+        else:
+            used_letters.append(letter)
         ok = 0
         for curr_letter in range(0, len(word)):
             if mistake == 1:
