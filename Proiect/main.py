@@ -1,23 +1,14 @@
-import os
 import random
+import os
 
-
-class Error(Exception):
-    pass
-
-
-class ValueNotInRange(Error):
-    pass
-
-
-score = {"Played games": 0, "Won games": 0, "Lost games": 0}
+score = {"Number of played games": 0, "Won games": 0, "Lost games": 0}
 
 
 def display_start_menu():
     print("\nHi! :)")
     print("You can choose to guess a word from a certain category or you can leave the app.")
     print("Choose a number that corresponds to the category from which you want to guess the word or exit: ")
-    print("[0] Exit the program")
+    print("[0] EXIT")
     print("[1] Food -> ingredients")
     print("[2] House -> things from a house")
     print("[3] Feelings")
@@ -33,7 +24,7 @@ def display_start_menu():
 def display_menu():
     print()
     print("Choose a category (or 0 to exit): ")
-    print("[0] Exit the program")
+    print("[0] EXIT")
     print("[1] Food")
     print("[2] House")
     print("[3] Feelings")
@@ -51,10 +42,18 @@ def get_category():
         try:
             category = int(input("Category:"))
             if category < 0 or category > 10:
-                raise ValueError("Please enter a number corresponding with the category: ")
+                raise ValueError()
             return category
-        except ValueError as ve:
-            print(ve)
+        except ValueError:
+            print("Please enter a valid number (between 0 and 10 and numbers only): ")
+
+
+def display_category(category):
+    possible_categories = {0: "EXIT", 1: "Food", 2: "House", 3: "Feelings", 4: "Clothing", 5: "Careers",
+                           6: "Programming", 7: "Animals", 8: "Universe", 9: "HumanBody", 10: "Car"}
+    result = possible_categories.get(category)
+    print("You have chosen: " + str(result))
+    return get_word(result)
 
 
 def get_word(category):
@@ -64,7 +63,7 @@ def get_word(category):
         line_count = 0
         for _ in file:
             line_count += 1
-        row_number = random.randint(0, line_count-1)
+        row_number = random.randint(0, line_count - 1)
         file.seek(0)
         word = ""
         for i, row in enumerate(file):
@@ -80,12 +79,19 @@ def get_word(category):
         print("Couldn't open the file!")
 
 
-def display_category(category):
-    possible_categories = {0: "Exit", 1: "Food", 2: "House", 3: "Feelings", 4: "Clothing", 5: "Careers",
-                           6: "Programming", 7: "Animals", 8: "Universe", 9: "HumanBody", 10: "Car"}
-    result = possible_categories.get(category)
-    print("You have chosen: " + str(result))
-    return get_word(result)
+def update_and_register_score(result):
+    score.update({"Number of played games": score.get("Number of played games") + 1})
+    if result == 1:
+        score.update({"Won games": score.get("Won games") + 1})
+    else:
+        score.update({"Lost games": score.get("Lost games") + 1})
+    if not os.path.isfile('./log.txt'):
+        file = open("log.txt", "x")
+        file.write(str(score))
+    else:
+        file = open("log.txt", "w")
+        file.write(str(score))
+    file.close()
 
 
 def start_guessing(word, attempts):
@@ -100,11 +106,8 @@ def start_guessing(word, attempts):
         if letter == '':
             print("Give me a letter, buddy.")
             continue
-        if len(letter) > 1:
-            print("Too many characters.")
-            mistake = 1
-        if letter.isdigit():
-            print("Letters only.")
+        if len(letter) > 1 or not letter.isalpha():
+            print("Please only one letter at a time, no numbers or others characters.")
             mistake = 1
         if letter in used_letters:
             if attempts != 1:
@@ -126,24 +129,6 @@ def start_guessing(word, attempts):
         if attempts == 0:
             print("--->   " + ' '.join(current_state) + "              Number of attempts left: " + str(attempts))
             return -1, diff - attempts
-
-
-def update_and_register_score(result):
-    total_games = score.get("Played games") + 1
-    score.update({"Played games": total_games})
-    if result == 1:
-        won_games = score.get("Won games") + 1
-        score.update({"Won games": won_games})
-    else:
-        lost_games = score.get("Lost games") + 1
-        score.update({"Lost games": lost_games})
-    if not os.path.isfile('./log.txt'):
-        file = open("log.txt", "x")
-        file.write(str(score))
-    else:
-        file = open("log.txt", "w")
-        file.write("\n" + str(score))
-    file.close()
 
 
 def start_game():
